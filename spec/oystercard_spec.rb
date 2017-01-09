@@ -25,4 +25,18 @@ describe Oystercard do
     end
   end
 
+  describe "#deduct" do
+    it { should respond_to(:deduct).with(1).argument}
+    it "deducts a fare from the card's balance" do
+      subject.top_up(10)
+      fare = 5
+      expect{ subject.deduct(fare) }.to change{subject.balance }.by -fare
+    end
+    it "doesn't allow fare to be deducted if more than balance" do
+      allow(oystercard).to receive(:balance).and_return(5)
+      fare = 6
+      error = "Insufficient funds"
+      expect{ subject.deduct(fare) }.to raise_error(error)
+    end
+  end
 end
