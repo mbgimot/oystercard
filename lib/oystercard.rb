@@ -1,7 +1,5 @@
-require_relative 'station'
 class Oystercard
 attr_reader :balance
-attr_accessor :in_journey
 
   DEFAULT_BALANCE = 0
   LIMIT = 90
@@ -21,5 +19,15 @@ attr_accessor :in_journey
     @balance -= fare
   end
 
+  def in_journey?
+    @in_journey
+  end
 
+  def touch_in
+    @in_journey = true
+  end
+
+  def touch_out
+    @in_journey = false
+  end
 end
