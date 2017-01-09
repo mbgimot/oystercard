@@ -4,9 +4,16 @@ describe Oystercard do
 
   subject(:oystercard) { described_class.new }
 
-  describe "default_balance" do
-    it "has default balance of 0" do
-      expect( subject.balance ).to eq 0
+  describe "balance" do
+    DEFAULT_BALANCE = 0
+    LIMIT = 90
+    it "has default balance of £#{DEFAULT_BALANCE}" do
+      expect( subject.balance ).to eq DEFAULT_BALANCE
+    end
+    it "balance will not exceed £#{LIMIT}" do
+      error = "£#{LIMIT} limit reached"
+      allow(oystercard).to receive(:balance).and_return(DEFAULT_BALANCE)
+      expect { subject.top_up(LIMIT) }.to raise_error(error)
     end
   end
 
