@@ -1,0 +1,8 @@
+Challenge 3
+- error type: NameError
+- filepath: /Users/mitchellbayer-goldman/Projects/oystercard/spec/oystercard_spec.rb
+- line # 1
+- raised when a given name is invalid or undefined (in this case undefined)
+- make Oyster class
+
+a stack trace is a list of the method calls that the application was in the middle of when an Exception was thrown.
