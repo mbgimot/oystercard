@@ -39,4 +39,12 @@ describe Oystercard do
       expect{ subject.deduct(fare) }.to raise_error(error)
     end
   end
+
+  describe "in_journey?" do
+    it "changes to true when touch_in" do
+      station = Station.new
+      station.touch_in(subject)
+      expect(subject.in_journey).to be_truthy
+    end
+  end
 end

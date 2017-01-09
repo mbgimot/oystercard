@@ -1,11 +1,14 @@
+require_relative 'station'
 class Oystercard
 attr_reader :balance
+attr_accessor :in_journey
 
   DEFAULT_BALANCE = 0
   LIMIT = 90
 
-  def initialize(balance=DEFAULT_BALANCE)
+  def initialize(balance=DEFAULT_BALANCE, in_journey = false)
     @balance = balance
+    @in_journey = in_journey
   end
 
   def top_up(amount)
@@ -17,4 +20,6 @@ attr_reader :balance
     raise "Insufficient funds" if fare > balance
     @balance -= fare
   end
+
+
 end

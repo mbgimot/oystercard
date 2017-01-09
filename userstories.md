@@ -18,12 +18,19 @@ In order to pay for my journey
 As a customer
 I need my fare deducted from my card
 
+###User Story 5###
+In order to get through the barriers.
+As a customer
+I need to touch in and out
+
 ###Functional Representation###
 Object | Message?
 card | balance
 card | top_up
 card | max_limit
 card | deduct
+station | touch_in/out
+card | in_journey?
 
 ###Nouns & Verbs###
 noun | verb
@@ -31,3 +38,4 @@ public transport | use
 customer | want
 money | add, deduct
 card | limit
+barriers | touch_in/out
