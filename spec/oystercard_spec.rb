@@ -14,7 +14,7 @@ describe Oystercard do
     it { should respond_to(:top_up).with(1).argument }
     it "adds money to the card's balance" do
       value = 10
-      expect( subject.top_up(value) ).to eq(value)
+      expect{ subject.top_up(value) }.to change{ subject.balance }.by value
     end
   end
 
