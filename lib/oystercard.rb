@@ -38,15 +38,10 @@ attr_reader :balance, :entry_station, :journeys
 
   def journey_log(entry_station, exit_station)
     journey = {
-      Entry_station: entry_station,
-      Exit_station: exit_station
+      entry_station: entry_station,
+      exit_station: exit_station
     }
     @journeys << journey
-  end
-
-  def number
-    i = @journeys.count + 1
-    journey + i
   end
 
 private

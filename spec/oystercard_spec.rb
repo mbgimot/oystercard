@@ -7,8 +7,8 @@ describe Oystercard do
     amount = 10
     fare = 5
 
-  let(:entry_station) {double :victoria}
-  let(:exit_station) {double :euston}
+  let(:entry_station){ double :victoria }
+  let(:exit_station){ double :euston }
 
 
   describe "balance" do
@@ -84,19 +84,19 @@ describe Oystercard do
       subject.top_up(minb)
       subject.touch_in(entry_station)
       subject.touch_out(2, exit_station)
-      expect(subject.journeys[0][:Entry_Station]).to eq(entry_station)
+      expect(subject.journeys[0][:entry_station]).to eq(entry_station)
     end
     it "has the exit station" do
       subject.top_up(minb)
       subject.touch_in(entry_station)
       subject.touch_out(2, exit_station)
-      expect(subject.journeys[0][:Exit_Station]).to eq(exit_station)
+      expect(subject.journeys[0][:exit_station]).to eq(exit_station)
     end
     it "stores entry & exit stations as one journey" do
       subject.top_up(minb)
       subject.touch_in(entry_station)
       subject.touch_out(2, exit_station)
-      expect(subject.journeys[0]).to include(:Entry_Station, :Exit_Station)
+      expect(subject.journeys[0]).to include(:entry_station, :exit_station)
     end
   end
 end
