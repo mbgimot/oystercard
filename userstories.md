@@ -23,14 +23,20 @@ In order to get through the barriers.
 As a customer
 I need to touch in and out
 
+###User Story 6###
+In order to pay for my journey
+As a customer
+I need to have the minimum amount (£1) for a single journey.
+
 ###Functional Representation###
 Object | Message?
 card | balance
 card | top_up
 card | max_limit
 card | deduct
-station | touch_in/out
+card | touch_in/out
 card | in_journey?
+card | min_balance
 
 ###Nouns & Verbs###
 noun | verb
@@ -39,3 +45,4 @@ customer | want
 money | add, deduct
 card | limit
 barriers | touch_in/out
+card | min balance

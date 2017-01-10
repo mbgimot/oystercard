@@ -3,6 +3,9 @@ require 'oystercard'
 describe Oystercard do
 
   subject(:oystercard) { described_class.new }
+    minb = Oystercard::MIN_BALANCE
+    amount = 10
+    fare = 5
 
   describe "balance" do
     db = Oystercard::DEFAULT_BALANCE
@@ -20,46 +23,41 @@ describe Oystercard do
   describe "#top_up" do
     it { should respond_to(:top_up).with(1).argument }
     it "adds money to the card's balance" do
-      value = 10
-      expect{ subject.top_up(value) }.to change{ subject.balance }.by value
+      expect{ subject.top_up(amount) }.to change{ subject.balance }.by amount
     end
   end
-
-  describe "#deduct" do
-    it { should respond_to(:deduct).with(1).argument}
-    it "deducts a fare from the card's balance" do
-      subject.top_up(10)
-      fare = 5
-      expect{ subject.deduct(fare) }.to change{subject.balance }.by -fare
-    end
-    it "doesn't allow fare to be deducted if more than balance" do
-      allow(oystercard).to receive(:balance).and_return(5)
-      fare = 6
-      error = "Insufficient funds"
-      expect{ subject.deduct(fare) }.to raise_error(error)
-    end
-  end
-
+    
   describe "#in_journey?" do
     it "is initially not in a journey" do
       expect(subject).not_to be_in_journey
     end
     it "changes to true when touched in" do
+      subject.top_up(minb)
       subject.touch_in
       expect(subject).to be_in_journey
     end
     it "changes to false when touched out" do
+      subject.top_up(minb)
       subject.touch_in
-      subject.touch_out
+      subject.touch_out(fare)
       expect(subject).not_to be_in_journey
     end
   end
 
   describe "#touch_in" do
     it { should respond_to(:touch_in).with(0).argument }
+    it "raises error if insufficient balance" do
+      error = "Insufficient funds"
+      expect{ subject.touch_in }.to raise_error(error)
+    end
   end
 
   describe "#touch_out" do
-    it { should respond_to(:touch_out).with(0).argument }
+    it { should respond_to(:touch_out).with(1).argument }
+    it "deducts the correct fare after the journey" do
+      subject.top_up(minb)
+      subject.touch_in
+      expect{subject.touch_out(fare)}.to change{subject.balance}.by -fare
+    end
   end
 end
