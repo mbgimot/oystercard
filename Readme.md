@@ -9,3 +9,5 @@ Once the card has a balance, we would like to be able to deduct money from it to
 If I need to pay for a fare, the minimum balance on my card should be at least £1. To test this in IRB: use os instance and expect os.deduct(x) to raise error if balance =< £1
 
 Once user's journey is complete, oystercard needs to be deducted by total fare. Test in IRB: os.top_up(1), os.touch_in, os.touch_out, os.deduct(fare).
+
+The oystercard needs to remember the entry station of the current journey. Test in IRB: oystercard = Oystercard.new, oystercard.top_up, oystercard.touch_in(station), oystercard.entry_station

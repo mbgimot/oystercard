@@ -7,6 +7,9 @@ describe Oystercard do
     amount = 10
     fare = 5
 
+  let(:entry_station) {double :"victoria"}
+
+
   describe "balance" do
     db = Oystercard::DEFAULT_BALANCE
     limit = Oystercard::LIMIT
@@ -26,38 +29,49 @@ describe Oystercard do
       expect{ subject.top_up(amount) }.to change{ subject.balance }.by amount
     end
   end
-    
+
   describe "#in_journey?" do
     it "is initially not in a journey" do
       expect(subject).not_to be_in_journey
     end
     it "changes to true when touched in" do
       subject.top_up(minb)
-      subject.touch_in
+      subject.touch_in(entry_station)
       expect(subject).to be_in_journey
     end
     it "changes to false when touched out" do
       subject.top_up(minb)
-      subject.touch_in
+      subject.touch_in(entry_station)
       subject.touch_out(fare)
       expect(subject).not_to be_in_journey
     end
   end
 
   describe "#touch_in" do
-    it { should respond_to(:touch_in).with(0).argument }
+    it { should respond_to(:touch_in).with(1).argument }
     it "raises error if insufficient balance" do
       error = "Insufficient funds"
-      expect{ subject.touch_in }.to raise_error(error)
+      expect{ subject.touch_in(entry_station) }.to raise_error(error)
     end
+    it "remembers which station the card touched in" do
+    subject.top_up(amount)
+    subject.touch_in(entry_station)
+    expect(subject.entry_station).to eq entry_station
+  end
   end
 
   describe "#touch_out" do
     it { should respond_to(:touch_out).with(1).argument }
     it "deducts the correct fare after the journey" do
       subject.top_up(minb)
-      subject.touch_in
+      subject.touch_in(entry_station)
       expect{subject.touch_out(fare)}.to change{subject.balance}.by -fare
+    end
+    it "forgets the entry station" do
+      subject.top_up(minb)
+      subject.touch_in(entry_station)
+      subject.touch_out(fare)
+      expect(subject.entry_station).to be_nil
     end
   end
 end
