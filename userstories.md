@@ -31,7 +31,18 @@ I need to have the minimum amount (£1) for a single journey.
 ###User Story 7###
 In order to pay for my journey
 As a customer
+When my journey is complete, I need the correct amount deducted from my card
+
+###User Story 8###
+In order to pay for my journey
+As a customer
 I need to know where I've travelled from
+
+###User Story 9###
+In order to know where I have been
+As a customer
+I want to see to all my previous trips
+
 
 ###Functional Representation###
 Object | Message?
@@ -42,7 +53,9 @@ card | deduct
 card | touch_in/out
 card | in_journey?
 card | min_balance
+card | correct_amount_deducted
 card | entry_station
+card | journey_log
 
 ###Nouns & Verbs###
 noun | verb
