@@ -10,7 +10,6 @@ describe Oystercard do
   let(:entry_station){ double(Station.new("euston", 1)) }
   let(:exit_station){ double(Station.new("victoria", 2)) }
 
-
   describe "balance" do
     db = Oystercard::DEFAULT_BALANCE
     limit = Oystercard::LIMIT
@@ -31,72 +30,46 @@ describe Oystercard do
     end
   end
 
-  describe "#in_journey?" do
-    it "is initially not in a journey" do
-      expect(subject).not_to be_in_journey
-    end
-    it "changes to true when touched in" do
-      subject.top_up(minb)
-      subject.touch_in(entry_station)
-      expect(subject).to be_in_journey
-    end
-    it "changes to false when touched out" do
-      subject.top_up(minb)
-      subject.touch_in(entry_station)
-      subject.touch_out(fare, exit_station)
-      expect(subject).not_to be_in_journey
-    end
-  end
-
   describe "#touch_in" do
     it { should respond_to(:touch_in).with(1).argument }
+
     it "raises error if insufficient balance" do
       error = "Insufficient funds"
       expect{ subject.touch_in(entry_station) }.to raise_error(error)
     end
+
     it "remembers which station the card touched in" do
-    subject.top_up(amount)
-    subject.touch_in(entry_station)
-    expect(subject.entry_station).to eq entry_station
-  end
+      subject.top_up(amount)
+      subject.touch_in(entry_station)
+      expect(subject.journey.trip).to include(:entry_station)
+      end
   end
 
   describe "#touch_out" do
+
     it { should respond_to(:touch_out).with(2).argument }
+
     it "deducts the correct fare after the journey" do
       subject.top_up(minb)
       subject.touch_in(entry_station)
       expect{subject.touch_out(fare, exit_station)}.to change{subject.balance}.by -fare
     end
+
     it "forgets the entry station" do
       subject.top_up(minb)
       subject.touch_in(entry_station)
       subject.touch_out(fare, exit_station)
-      expect(subject.entry_station).to be_nil
+      expect(subject.journey.trip).to include(:exit_station)
     end
   end
 
   describe "#journey_log" do
-    it "has no journeys by default" do
-      expect(subject.journeys).to be_empty
-    end
-    it "has the entry station" do
-      subject.top_up(minb)
-      subject.touch_in(entry_station)
-      subject.touch_out(2, exit_station)
-      expect(subject.journeys[0][:entry_station]).to eq(entry_station)
-    end
-    it "has the exit station" do
-      subject.top_up(minb)
-      subject.touch_in(entry_station)
-      subject.touch_out(2, exit_station)
-      expect(subject.journeys[0][:exit_station]).to eq(exit_station)
-    end
     it "stores entry & exit stations as one journey" do
       subject.top_up(minb)
       subject.touch_in(entry_station)
-      subject.touch_out(2, exit_station)
-      expect(subject.journeys[0]).to include(:entry_station, :exit_station)
+      subject.touch_out(fare, exit_station)
+      expect(subject.journey_log[0]).to include(:entry_station, :exit_station)
     end
   end
+
 end

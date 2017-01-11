@@ -1,0 +1,18 @@
+require './lib/oystercard.rb'
+card = Oystercard.new
+euston = Station.new("Euston", 1)
+aldgate = Station.new("Aldgate", 2)
+card.top_up(20)
+card.touch_out(2, aldgate)
+card.journey_log
+
+
+require './lib/oystercard.rb'
+card = Oystercard.new
+euston = Station.new("Euston", 1)
+aldgate = Station.new("Aldgate", 2)
+card.top_up(20)
+card.touch_in(aldgate)
+card.touch_in(euston)
+card.touch_in(aldgate)
+card.journey_log
