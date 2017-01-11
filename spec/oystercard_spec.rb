@@ -7,8 +7,8 @@ describe Oystercard do
     amount = 10
     fare = 5
 
-  let(:entry_station){ double :victoria }
-  let(:exit_station){ double :euston }
+  let(:entry_station){ double(Station.new("euston", 1)) }
+  let(:exit_station){ double(Station.new("victoria", 2)) }
 
 
   describe "balance" do
