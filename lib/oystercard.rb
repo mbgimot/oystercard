@@ -29,7 +29,6 @@ attr_reader :balance, :journey_log, :journey
   def touch_out(exit_station)
     multiple_touch_out
     finish_journey(exit_station)
-    deduct(1)
     total_balance
   end
 
@@ -57,6 +56,7 @@ private
     if !@journey.nil? && @journey.in_journey?
       @journey.finish
       @journey_log << @journey
+      deduct(Journey::PENALTY_FARE)
     end
   end
 
@@ -64,6 +64,9 @@ private
     if @journey.nil? || !@journey.in_journey?
       @journey = Journey.new
       @journey.start
+      deduct(Journey::PENALTY_FARE)
+    else
+      deduct(Journey::MIN_FARE)
     end
   end
 

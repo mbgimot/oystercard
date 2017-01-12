@@ -3,6 +3,9 @@ require_relative 'station.rb'
 class Journey
   attr_reader :trip
 
+  MIN_FARE = 1
+  PENALTY_FARE = 6
+
   def initialize
     @trip = Hash.new
   end
@@ -18,4 +21,5 @@ class Journey
   def in_journey?
     !@trip[:entry_station].nil? && @trip[:exit_station].nil?
   end
+
 end

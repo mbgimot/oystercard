@@ -41,11 +41,11 @@ describe Journey do
   describe '#start' do
     it "has the entry station" do
       subject.start(entry_station)
-      expect(subject.trip[:entry_station]).to eq(entry_station)
+      expect(subject.trip[:entry_station]).to eq(entry_station.name)
     end
     it "has the exit station" do
       subject.finish(exit_station)
-      expect(subject.trip[:exit_station]).to eq(exit_station)
+      expect(subject.trip[:exit_station]).to eq(exit_station.name)
     end
     it "stores entry & exit stations as one journey" do
       subject.start(entry_station)
