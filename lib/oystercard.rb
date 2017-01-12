@@ -11,7 +11,7 @@ attr_reader :balance, :journey_log, :journey
   def initialize(balance=DEFAULT_BALANCE)
     @balance = balance
     @journey_log = []
-    @counter = 0
+    @journey = nil
   end
 
   def top_up(amount)
@@ -22,17 +22,14 @@ attr_reader :balance, :journey_log, :journey
   def touch_in(entry_station)
     raise "Insufficient funds" if balance < MIN_BALANCE
     multiple_touch_in
-    starts_journey(entry_station)
-    @counter += 1
+    start_journey(entry_station)
     total_balance
   end
 
-  def touch_out(fare, exit_station)
-    @journey.finish(exit_station)
+  def touch_out(exit_station)
     multiple_touch_out
-    deduct(fare)
-    store_journey
-    @counter = 0
+    finish_journey(exit_station)
+    deduct(1)
     total_balance
   end
 
@@ -40,33 +37,34 @@ attr_reader :balance, :journey_log, :journey
     "Your balance is £#{balance}"
   end
 
-#private
-
-  def store_journey
-    @journey_log << @journey.trip
-  end
+private
 
   def deduct(fare)
     @balance -= fare
   end
 
+  def start_journey(entry_station)
+    @journey = Journey.new
+    @journey.start(entry_station)
+  end
+
+  def finish_journey(exit_station)
+    @journey.finish(exit_station)
+    @journey_log << @journey
+  end
+
   def multiple_touch_in
-    if @counter >= 1
+    if !@journey.nil? && @journey.in_journey?
       @journey.finish
-      store_journey
-      #@journey.trip[:entry_station] = nil
+      @journey_log << @journey
     end
   end
 
   def multiple_touch_out
-    if @journey == nil || @journey.trip[:entry_station].nil?
+    if @journey.nil? || !@journey.in_journey?
       @journey = Journey.new
-      @journey.start("Not touched in")
+      @journey.start
     end
   end
 
-  def starts_journey(entry_station)
-    @journey = Journey.new
-    @journey.start(entry_station)
-  end
 end

@@ -12,6 +12,11 @@ describe Journey do
   let(:exit_station){ double(Station.new("victoria", 2)) }
   let(:oyster){ double(Oystercard.new(20)) }
 
+  before do
+    allow(entry_station).to receive(:name){"euston"}
+    allow(exit_station).to receive(:name){"victoria"}
+  end
+
   describe "#in_journey?" do
     it "is initially not in a journey" do
       expect(subject).not_to be_in_journey

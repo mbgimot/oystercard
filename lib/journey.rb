@@ -7,19 +7,15 @@ class Journey
     @trip = Hash.new
   end
 
+  def start(entry_station = nil)
+    entry_station.nil? ? @trip[:entry_station] = entry_station : @trip[:entry_station] = entry_station.name
+  end
+
+  def finish(exit_station = nil)
+    exit_station.nil? ? @trip[:exit_station] = exit_station : @trip[:exit_station] = exit_station.name
+  end
+
   def in_journey?
     !@trip[:entry_station].nil? && @trip[:exit_station].nil?
-  end
-
-  def start(entry_station = "Not touched in")
-    @trip[:entry_station] = entry_station
-  end
-
-  def finish(exit_station = "Not touched out")
-    @trip[:exit_station] = exit_station
-  end
-
-  def completed?
-    @trip[:exit_station] != "Not touched out" 
   end
 end
