@@ -28,9 +28,9 @@ attr_reader :balance, :journey_log, :journey
   end
 
   def touch_out(fare, exit_station)
+    @journey.finish(exit_station)
     multiple_touch_out
     deduct(fare)
-    @journey.finish(exit_station)
     store_journey
     @counter = 0
     total_balance
@@ -40,7 +40,7 @@ attr_reader :balance, :journey_log, :journey
     "Your balance is £#{balance}"
   end
 
-private
+#private
 
   def store_journey
     @journey_log << @journey.trip
@@ -54,13 +54,14 @@ private
     if @counter >= 1
       @journey.finish
       store_journey
+      #@journey.trip[:entry_station] = nil
     end
   end
 
   def multiple_touch_out
-    if @journey == nil
+    if @journey == nil || @journey.trip[:entry_station].nil?
       @journey = Journey.new
-      @journey.start
+      @journey.start("Not touched in")
     end
   end
 

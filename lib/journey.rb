@@ -18,4 +18,8 @@ class Journey
   def finish(exit_station = "Not touched out")
     @trip[:exit_station] = exit_station
   end
+
+  def completed?
+    @trip[:exit_station] != "Not touched out" 
+  end
 end
