@@ -49,24 +49,23 @@ private
 
   def finish_journey(exit_station)
     @journey.finish(exit_station)
-    @journey_log << @journey
+    save_current_journey
+    @journey = nil
   end
 
   def multiple_touch_in
-    if !@journey.nil? && @journey.in_journey?
-      @journey.finish
-      @journey_log << @journey
-      deduct(Journey::PENALTY_FARE)
-    end
+    save_current_journey if @journey
   end
 
+  def save_current_journey
+    @journey_log << @journey
+    deduct(@journey.fare)
+  end
+
+
   def multiple_touch_out
-    if @journey.nil? || !@journey.in_journey?
+    if @journey.nil?
       @journey = Journey.new
-      @journey.start
-      deduct(Journey::PENALTY_FARE)
-    else
-      deduct(Journey::MIN_FARE)
     end
   end
 

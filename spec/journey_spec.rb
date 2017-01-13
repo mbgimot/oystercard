@@ -17,40 +17,40 @@ describe Journey do
     allow(exit_station).to receive(:name){"victoria"}
   end
 
-  describe "#in_journey?" do
-    it "is initially not in a journey" do
-      expect(subject).not_to be_in_journey
-    end
-    it "changes to true when touched in" do
-      subject.start(entry_station)
-      expect(subject).to be_in_journey
-    end
-    it "changes to false when touched out" do
-      subject.start(entry_station)
-      subject.finish(exit_station)
-      expect(subject).not_to be_in_journey
-    end
-  end
-
-  describe "#journey_log" do
+  describe "#initialize" do
     it "has no journeys by default" do
-      expect(subject.trip).to be_empty
+      expect(subject.entry_station).to be_nil
+      expect(subject.exit_station).to be_nil
     end
   end
 
   describe '#start' do
     it "has the entry station" do
       subject.start(entry_station)
-      expect(subject.trip[:entry_station]).to eq(entry_station.name)
+      expect(subject.entry_station).to eq(entry_station)
     end
+  end
+
+  describe "#exit" do
     it "has the exit station" do
       subject.finish(exit_station)
-      expect(subject.trip[:exit_station]).to eq(exit_station.name)
+      expect(subject.exit_station).to eq(exit_station)
     end
-    it "stores entry & exit stations as one journey" do
+  end
+
+  describe "#fare" do
+    it "returns #{Journey::MIN_FARE} if user completed a journey" do
       subject.start(entry_station)
       subject.finish(exit_station)
-      expect(subject.trip).to include(:entry_station, :exit_station)
+      expect(subject.fare).to eq(Journey::MIN_FARE)
+    end
+    it "returns #{Journey::PENALTY_FARE} if user forgot to touch in" do
+      subject.finish(exit_station)
+      expect(subject.fare).to eq(Journey::PENALTY_FARE)
+    end
+    it "returns #{Journey::PENALTY_FARE} if user forgot to touch out" do
+      subject.start(entry_station)
+      expect(subject.fare).to eq(Journey::PENALTY_FARE)
     end
   end
 end

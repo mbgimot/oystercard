@@ -9,29 +9,32 @@ describe Oystercard do
 
   let(:entry_station){ double(Station.new("euston", 1)) }
   let(:exit_station){ double(Station.new("victoria", 2)) }
+  let(:journey){ double(Journey.new) }
 
   before do
     allow(entry_station).to receive(:name){"euston"}
     allow(exit_station).to receive(:name){"victoria"}
+    allow(journey).to receive(:entry_station){entry_station}
+    allow(journey).to receive(:exit_station){exit_station}
   end
 
   describe "balance" do
     db = Oystercard::DEFAULT_BALANCE
     limit = Oystercard::LIMIT
     it "has default balance of £#{db}" do
-      expect( subject.balance ).to eq db
+      expect( oystercard.balance ).to eq db
     end
     it "balance will not exceed £#{limit}" do
       error = "£#{limit} limit reached"
       allow(oystercard).to receive(:balance).and_return(0)
-      expect { subject.top_up(limit) }.to raise_error(error)
+      expect { oystercard.top_up(limit) }.to raise_error(error)
     end
   end
 
   describe "#top_up" do
     it { should respond_to(:top_up).with(1).argument }
     it "adds money to the card's balance" do
-      expect{ subject.top_up(amount) }.to change{ subject.balance }.by amount
+      expect{ oystercard.top_up(amount) }.to change{ oystercard.balance }.by amount
     end
   end
 
@@ -40,14 +43,8 @@ describe Oystercard do
 
     it "raises error if insufficient balance" do
       error = "Insufficient funds"
-      expect{ subject.touch_in(entry_station) }.to raise_error(error)
+      expect{ oystercard.touch_in(entry_station) }.to raise_error(error)
     end
-
-    it "remembers which station the card touched in" do
-      subject.top_up(amount)
-      subject.touch_in(entry_station)
-      expect(subject.journey.trip).to include(:entry_station)
-      end
   end
 
   describe "#touch_out" do
@@ -55,26 +52,35 @@ describe Oystercard do
     it { should respond_to(:touch_out).with(1).argument }
 
     it "deducts the correct fare after the journey" do
-      subject.top_up(minb)
-      subject.touch_in(entry_station)
-      expect{subject.touch_out(exit_station)}.to change{subject.balance}.by -1
+      oystercard.top_up(minb)
+      oystercard.touch_in(entry_station)
+      expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by -Journey::MIN_FARE
     end
-
-    it "forgets the entry station" do
-      subject.top_up(minb)
-      subject.touch_in(entry_station)
-      subject.touch_out(exit_station)
-      expect(subject.journey.trip).to include(:exit_station)
-    end
-  end
 
   describe "#journey_log" do
     it "stores entry & exit stations as one journey" do
-      subject.top_up(minb)
-      subject.touch_in(entry_station)
-      subject.touch_out(exit_station)
-      expect(subject.journey_log[0].trip).to include(:entry_station, :exit_station)
+      oystercard.top_up(minb)
+      oystercard.touch_in(entry_station)
+      expect{oystercard.touch_out(exit_station)}.to change{oystercard.journey_log.length}.by 1
     end
   end
 
+
+    describe "#in_journey?" do
+      it "is initially not in a journey" do
+        expect(oystercard.journey).to be_nil
+      end
+      it "changes to true when touched in" do
+        oystercard.top_up(minb)
+        oystercard.touch_in(entry_station)
+        expect(oystercard.journey).to be_truthy
+      end
+      it "changes to false when touched out" do
+        oystercard.top_up(minb)
+        oystercard.touch_in(entry_station)
+        oystercard.touch_out(exit_station)
+        expect(oystercard.journey).to be_nil
+      end
+    end
+  end
 end
