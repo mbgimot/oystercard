@@ -1,7 +1,7 @@
 require_relative "journey"
 
 class JourneyLog
-  attr_reader :journeys, :current_journey
+  attr_reader :current_journey
 
   def initialize(journey_class, oystercard)
     @current_journey = nil
@@ -24,6 +24,10 @@ class JourneyLog
     @current_journey = nil
   end
 
+  def journeys
+    @journeys.dup
+  end
+
 private
 
   def multiple_touch_in
@@ -43,6 +47,6 @@ private
   end
 
   def currentjourney
-    @current_journey.completed? ? @current_journey = @journey_class.new : @current_journey
+    @current_journey ||= @journey_class.new
   end
 end

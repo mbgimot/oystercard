@@ -3,8 +3,13 @@ require 'oystercard'
 describe Oystercard do
 
   subject(:oystercard) { described_class.new }
-  let(:entry_station){ double(Station.new("euston", 1)) }
-  let(:exit_station){ double(Station.new("victoria", 2)) }
+  let(:entry_station){ instance_double("Station") }
+  let(:exit_station){ instance_double("Station") }
+
+  before do
+    allow(entry_station).to receive(:zone){1}
+    allow(exit_station).to receive(:zone){1}
+  end
 
   describe "balance" do
     db = Oystercard::DEFAULT_BALANCE

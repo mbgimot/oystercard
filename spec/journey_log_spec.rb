@@ -2,15 +2,17 @@ require "journey_log"
 require "station"
 
 describe JourneyLog do
-  let(:oyster){ double(Oystercard.new(20)) }
+  let(:oyster){ double("Oystercard") }
   subject(:journeylog) { described_class.new(Journey, oyster) }
 
-  let(:entry_station){ double(Station.new("euston", 1)) }
-  let(:exit_station){ double(Station.new("victoria", 2)) }
+  let(:entry_station){ instance_double("Station") }
+  let(:exit_station){ instance_double("Station") }
 
   before do
     allow(entry_station).to receive(:name){"euston"}
     allow(exit_station).to receive(:name){"victoria"}
+    allow(entry_station).to receive(:zone){1}
+    allow(exit_station).to receive(:zone){1}
     allow(oyster).to receive(:deduct)
   end
 

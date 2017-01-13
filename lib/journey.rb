@@ -5,6 +5,7 @@ class Journey
 
   MIN_FARE = 1
   PENALTY_FARE = 6
+  ZONE = 1
 
   def initialize
     @entry_station = nil
@@ -24,7 +25,7 @@ class Journey
   end
 
   def fare
-    completed? ? MIN_FARE : PENALTY_FARE
+    completed? ? ((ZONE * (@entry_station.zone - @exit_station.zone).abs) + MIN_FARE) : PENALTY_FARE
   end
 
 end

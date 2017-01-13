@@ -10,9 +10,7 @@ attr_reader :balance, :journey_log
 
   def initialize(balance=DEFAULT_BALANCE)
     @balance = balance
-    #@journey_log = []
     @journey_log = JourneyLog.new(Journey, self)
-    #@journey = nil
   end
 
   def top_up(amount)
@@ -22,13 +20,11 @@ attr_reader :balance, :journey_log
 
   def touch_in(entry_station)
     raise "Insufficient funds" if balance < MIN_BALANCE
-    #multiple_touch_in
     @journey_log.start_journey(entry_station)
     total_balance
   end
 
   def touch_out(exit_station)
-    #multiple_touch_out
     @journey_log.finish_journey(exit_station)
     total_balance
   end
